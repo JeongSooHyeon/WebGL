@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>20185290 정수현 - Lighting</title>
+        <script id="vertex-shader" type="x-shader/x-vertex">
+        attribute vec4 vPosition;
+        attribute vec4 vNormal;
+        attribute vec4 vColor;
+        uniform mat4 modelMatrix, viewMatrix;
+        uniform mat4 projectionMatrix;
+        varying vec4 fColor;
+
+        uniform vec3 eyePos, kAtten, spotDir; // atten 거리제곱반비례 감쇄현상
+        uniform vec4 lightSrc, lightAmbient, lightDiffuse, lightSpecular;
+        uniform vec4 matAmbient, matDiffuse, matSpecular;
+        uniform float matShininess, spotExp;
+
+        void main() {
+            gl_Position = projectionMatrix * viewMatrix * modelMatrix * vPosition;
+            //fColor = vColor;
+
+            vec4 ambient = lightAmbient * matAmbient;
+
+            vec3 N = normalize(mat3(modelMatrix) * vNormal.xyz); // obj법선
+            vec3 worldPos = (modelMatrix * vPosition).xyz; // 어디로 옮겨짐
+            vec3 V = normalize(eyePos - worldPos); // 카메라의 위치에서 내 위치 v
+
+            if(lightSrc.w == 0.0){ // directional light
+                vec3 L = normalize(lightSrc.xyz);
+                float kd = max(dot(L, N), 0.0);
+                vec4 diffuse = kd * lightDiffuse * matDiffuse;
+
+                vec3 H = normalize(L + V);
+                float ks = pow(max(dot(N, H), 0.0), matShininess);
+                vec4 specular = ks * lightSpecular * matSpecular; // 눈에 들어오면
+
+                fColor = ambient + diffuse + specular;
+            }
+            else{   // point light 위치가 있음 감쇄현상
+                vec3 lightVec = lightSrc.xyz - worldPos; // 위치가 있어서
+                vec3 L = normalize(lightVec);
+                float kd = max(dot(L, N), 0.0);
+                vec4 diffuse = kd * lightDiffuse * matDiffuse;
+
+                vec3 H = normalize(L + V);
+                float ks = pow(max(dot(N, H), 0.0), matShininess);
+                vec4 specular = ks * lightSpecular * matSpecular;
+
+                float d = length(lightVec); // 내위치 점광원 거리
+                float atten = 1.0 / (kAtten[0] + kAtten[1]*d + kAtten[2]*d*d);
+                
+                
+                // spotlight
+                float spotDot = max(dot(normalize(spotDir), -L), 0.0);
+                if(spotDot > 0.0)
+                    atten *= pow(spotDot, spotExp);
+                else    
+                    atten = 0.0;
+                    
+                    
+                fColor = ambient + atten * (diffuse + specular);
+            }
+            fColor.a = 1.0;
+        }
+        </script>
+
+        <script id="fragment-shader" type="x-shader/x-fragment">
+        precision mediump float;
+        varying vec4 fColor;
+
+        void main() {
+            gl_FragColor = fColor;
+        }
+        </script>
+
+        <script type="text/javascript" src="../Common/webgl-utils.js"></script>
+        <script type="text/javascript" src="../Common/initShaders.js"></script>
+        <script type="text/javascript" src="../Common/MV.js"></script>
+        <script type="text/javascript" src="../trackball.js"></script>
+        <script type="text/javascript" src="light.js"></script>
+    </head>
+    <body>
+        <div style="width: 512px; text-align: center;">
+            <button id="xButton">Rotate X</button>
+            <button id="yButton">Rotate Y</button>
+            <button id="zButton">Rotate Z</button>
+            <button id="buttonT">Toggle Rotate</button>
+        </div>
+        <canvas id="gl-canvas" width="512" height="512">
+            Oops... your browser doesn't support the HTML5 canvas element!
+        </canvas>
+    </body>
+</html>

@@ -1,0 +1,50 @@
+광원
+1. Directional Light 방향성
+2. Point Light 점
+3. Spotlight
+
+충돌법칙
+
+금속 
+들어온 빛 그대로 반사
+재질이 어떤 성분 반사할지가 색상 결정
+
+입사각만큼 반사각 보내
+
+정반사 표면 스펙큘러
+디퓨즈가 색상 결정, obj 전체에서 산란
+
+반투과 유리 물에서 굴절
+
+n, v카메라 눈 cop이 있는 지점, l광원으로 향하는 v, r 벡터
+
+
+atten이ㅜ먼지 구허ㅕㄴ 등등 시험
+
+ view matirx 카메라
+
+마하밴드 없애려면 vertex마다가 아닌 pixel 마다 조명 계산해야 정확함
+
+
+
+
+면당 쉐이딩 flat shading 면당 하나의 n
+
+Smooth 쉐이딩 : vertex마다 쉐이딩
+
+검검사이 흰색이 유난히 하얗게 보임 
+
+마하밴드
+
+phong shading
+pixel마다 n벡터, 3차원 위치 
+보간으로 보내야 됨 normal과 
+fragment 쉐이더에서 계산
+법선 벡터를 가지고 함
+
+
+
+
+
+
+

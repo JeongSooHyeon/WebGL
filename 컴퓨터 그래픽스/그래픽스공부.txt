@@ -1,0 +1,35 @@
+uniform
+단일 그리기 호출의 모든 정점에 유지되는 값
+균일한 저장 한정자로 선언된 전역 shader 변수(OpenGL에서 설정)
+사용자가 쉐이더 프로그램에 전달할 수 있는 매개변수
+특정 렌더링 호출 내에서 한 쉐이더 호출에서 다음 쉐이더 호출로 변경되지 않고 모든 호출에서 균일
+쉐이더 코드로 변경할 수 없음
+out, inout 매개변수로 유니폼 전달할 수 없음
+유니폼 위치를 얻는 이뉴는 유니폼 값을 변경하기 위함
+vertex, fragment shader 둘 다 접근 가능 
+재설정이나 업데이트까지 값 유지
+그리기 호출을 수행하기 전에 값을 로드한 다음 vertex shader를 호출할 때 
+동일한 값에 접근 가능 전체 그리기 호출에서 일정하게 유지
+조명 매개변수, 변환 행렬, 텍스쳐 개체 핸들
+attribute보다 속도 빠름
+상수와 같음
+uniform
+vertex shader, fragment shader 둘 다 접근 가능
+빠르게 w/r 가능
+속도 빠름(attribute보다)
+상수와 같다
+모든 vertex, shader에 적용
+
+
+varying
+vertex shader -> frame shader 전달하기 위해 
+두 쉐이더에 변수 선언
+vertex당 값을 사용해서 frame shader에서 가변성 설정 webgl이 보간값 전달
+
+attribute
+버퍼에서 가져온 데이터
+vertex shader에서만 사용
+각 쉐이더 호출에 대해 vertex buffer의 새 값으로 로드 
+
+vertex shader : attribute, uniform, texture
+frame shader : uniform, varying, texture
